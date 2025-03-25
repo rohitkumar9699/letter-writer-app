@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Editor from './Editor';
 import Login from './Login';
+import "./index.css"
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -22,8 +24,10 @@ function App() {
       <h1>Letter Writer App</h1>
       {user ? (
         <>
-          <p>Welcome, {user.displayName}</p>
-          <a href="http://localhost:5000/auth/logout">Logout</a>
+          <div className='welcome-container'>
+            <p>Welcome, {user.displayName}</p>
+            <a href="http://localhost:5000/auth/logout">Logout</a>
+          </div>
           <Editor />
         </>
       ) : (

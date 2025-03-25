@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import './editor.css';
+
 
 function Editor() {
   const [title, setTitle] = useState('');
@@ -17,7 +19,7 @@ function Editor() {
   };
 
   return (
-    <div>
+    <div className="editor-container">
       <h2>Create a Letter</h2>
       <input
         type="text"
