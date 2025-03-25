@@ -4,7 +4,8 @@ import Editor from './Editor';
 import Login from './Login';
 import "./index.css"
 
-const url = 'https://letter-writer-app-backend.vercel.app'
+const url = process.env.REACT_APP_BACKEND_URL || 'https://letter-writer-app-backend.vercel.app';
+
 
 function App() {
   const [user, setUser] = useState(null);

@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 
-const url = 'https://letter-writer-app.netlify.app'
+const url = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
 
 // Initiate authentication with Google
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email', 'https://www.googleapis.com/auth/drive.file'] }));

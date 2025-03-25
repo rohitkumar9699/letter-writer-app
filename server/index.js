@@ -6,7 +6,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 require('dotenv').config();
-const url = 'https://letter-writer-app.netlify.app'
+const url = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
 
 dotenv.config();
 

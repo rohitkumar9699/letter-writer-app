@@ -1,6 +1,7 @@
 import React from 'react';
 import './login.css'
-const url = 'https://letter-writer-app-backend.vercel.app'
+const url = process.env.REACT_APP_BACKEND_URL || 'https://letter-writer-app-backend.vercel.app';
+
 
 
 function Login() {

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './editor.css';
 
-const url = 'https://letter-writer-app-backend.vercel.app'
+const url = process.env.REACT_APP_BACKEND_URL || 'https://letter-writer-app-backend.vercel.app';
+
 
 function Editor() {
   const [title, setTitle] = useState('');
