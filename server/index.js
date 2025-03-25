@@ -6,7 +6,7 @@ const cors = require('cors');
 require('dotenv').config();
 
 require('dotenv').config();
-
+const url = 'https://letter-writer-app.netlify.app'
 
 dotenv.config();
 
@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: "http://localhost:3000", // React client URL
+    origin: url, // React client URL
     credentials: true
 }));
 
