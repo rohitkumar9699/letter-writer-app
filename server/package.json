@@ -7,8 +7,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node index.js",
-    "build": "echo 'No build step needed for backend'"
+    "start": "node index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
