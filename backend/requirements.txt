@@ -1,1 +1,0 @@
-cors, dotenv, express, express-session, googleapis, nodemon, passport, passport-google-oauth20
