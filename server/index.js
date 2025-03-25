@@ -12,6 +12,11 @@ dotenv.config();
 
 const app = express();
 
+//testing
+app.get("/", (req, res) => {
+  res.send("<h1>Server Started</h1>");
+})
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
