@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './editor.css';
 
+const url = process.env.REACT_APP_BACKEND_URL || 'https://letter-writer-app-backend.vercel.app';
+
 
 function Editor() {
   const [title, setTitle] = useState('');
@@ -10,7 +12,7 @@ function Editor() {
 
   const handleSave = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/letters/save', { title, content }, { withCredentials: true });
+      const response = await axios.post(`${url}/letters/save`, { title, content }, { withCredentials: true });
       setMessage(response.data.message);
     } catch (error) {
       console.error(error);

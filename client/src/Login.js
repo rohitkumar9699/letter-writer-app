@@ -1,9 +1,13 @@
 import React from 'react';
 import './login.css'
+const url = process.env.REACT_APP_BACKEND_URL || 'https://letter-writer-app-backend.vercel.app';
+
+
+
 function Login() {
   const handleLogin = () => {
     // Redirect to back-end Google OAuth endpoint
-    window.location.href = 'http://localhost:5000/auth/google';
+    window.location.href = `${url}/auth/google`;
   };
 
   return (

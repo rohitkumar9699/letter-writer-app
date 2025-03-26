@@ -4,13 +4,17 @@ import Editor from './Editor';
 import Login from './Login';
 import "./index.css"
 
+const url = process.env.REACT_APP_BACKEND_URL || 'https://letter-writer-app-backend.vercel.app';
+
 
 function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     // Check if user is authenticated
-    axios.get('http://localhost:5000/auth/status', { withCredentials: true })
+
+    // axios.get('http://localhost:5000/auth/status', { withCredentials: true })
+    axios.get(`${url}/auth/status`, { withCredentials: true })
       .then(response => {
         setUser(response.data.user);
       })
@@ -26,7 +30,9 @@ function App() {
         <>
           <div className='welcome-container'>
             <p>Welcome, {user.displayName}</p>
-            <a href="http://localhost:5000/auth/logout">Logout</a>
+            {/* <a href="http://localhost:5000/auth/logout">Logout</a> */}
+            <a href={`${url}/auth/logout`}>Logout</a>
+            
           </div>
           <Editor />
         </>
