@@ -9,30 +9,13 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "server/index.js"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { 
-          "key": "Access-Control-Allow-Origin", 
-          "value": "https://letter-writer-app.netlify.app" 
-        },
-        { 
-          "key": "Access-Control-Allow-Credentials", 
-          "value": "true" 
-        },
-        { 
-          "key": "Access-Control-Allow-Methods", 
-          "value": "GET,POST,PUT,DELETE,OPTIONS" 
-        },
-        { 
-          "key": "Access-Control-Allow-Headers", 
-          "value": "Content-Type, Authorization, X-Requested-With" 
-        }
-      ]
+      "dest": "server/index.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://letter-writer-app.netlify.app",
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
     }
   ]
 }
