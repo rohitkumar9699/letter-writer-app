@@ -55,6 +55,10 @@ require('dotenv').config();
 const app = express();
 const frontendUrl = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
 
+// Corrected health check endpoint
+app.get("/check", (req, res) => {
+  res.status(200).send("Server is running");
+});
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
