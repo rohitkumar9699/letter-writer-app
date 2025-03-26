@@ -37,22 +37,21 @@
 
 // module.exports = router;
 
-
 const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 
 const url = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
 
-// Initiate authentication with Google
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email', 'https://www.googleapis.com/auth/drive.file'] }));
+router.get('/google', passport.authenticate('google', { 
+  scope: ['profile', 'email', 'https://www.googleapis.com/auth/drive.file'] 
+}));
 
-// Google OAuth callback URL
-router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/auth/failure' }),
+router.get('/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/auth/failure' }),
   (req, res) => {
-    // Ensure session is saved before redirecting
     req.session.save(() => {
-      res.redirect(url);
+      res.redirect(`${url}/home`); // Redirect to /home after login
     });
   }
 );
@@ -65,12 +64,11 @@ router.get('/logout', (req, res, next) => {
   req.logout(function(err) {
     if (err) { return next(err); }
     req.session.destroy(() => {
-      res.redirect(url);
+      res.redirect(url); // Redirect to main page after logout
     });
   });
 });
 
-// Check authentication status
 router.get('/status', (req, res) => {
   if (req.isAuthenticated()) {
     res.json({ user: req.user });

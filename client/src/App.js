@@ -45,28 +45,41 @@
 
 // export default App;
 
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Editor from './Editor';
 import Login from './Login';
 import "./index.css";
 
-// const url = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
 const url = process.env.REACT_APP_BACKEND_URL || 'https://letter-writer-app-backend.vercel.app';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(`${url}/auth/status`, { withCredentials: true })
-      .then(response => {
-        setUser(response.data.user);
-      })
-      .catch(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await axios.get(`${url}/auth/status`, { 
+          withCredentials: true 
+        });
+        if (response.data.user) {
+          setUser(response.data.user);
+          // Redirect handled by link in Login component
+        }
+      } catch (error) {
         setUser(null);
-      });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>

@@ -51,17 +51,11 @@ const session = require('express-session');
 const passport = require('passport');
 const dotenv = require('dotenv');
 const cors = require('cors');
-require('dotenv').config();
 
 dotenv.config();
 const url = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
 
 const app = express();
-
-// Testing route
-app.get("/", (req, res) => {
-  res.send("<h1>Server Started</h1>");
-});
 
 // Middleware
 app.use(express.json());
@@ -78,16 +72,15 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', // Secure cookies only in production
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // 'lax' for local development
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
 
-// Initialize Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Passport config
 require('./config/passport')(passport);
 
 // Routes
