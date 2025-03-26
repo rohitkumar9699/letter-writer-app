@@ -45,7 +45,6 @@
 // const PORT = process.env.PORT || 5000;
 // app.listen(PORT, () => console.log(`Server running on port:  ${PORT}`));
 
-
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
@@ -56,17 +55,14 @@ require('dotenv').config();
 const app = express();
 const frontendUrl = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
 
-app.get("/check", (req, res) => {
-  res.status(200).send("Server started successfully");
-});
-
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
   origin: frontendUrl,
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"]
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(session({
@@ -76,7 +72,8 @@ app.use(session({
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true
   }
 }));
 

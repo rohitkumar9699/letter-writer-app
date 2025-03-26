@@ -45,7 +45,6 @@
 
 // export default App;
 
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Editor from './Editor';
@@ -68,15 +67,16 @@ function App() {
         if (response.data.user) {
           setUser(response.data.user);
           if (!isHome) {
-            window.location.href = '/home';
+            window.location.pathname = '/home';
           }
         } else if (isHome) {
-          window.location.href = '/';
+          window.location.pathname = '/';
         }
       } catch (error) {
+        console.error('Auth check error:', error);
         setUser(null);
         if (isHome) {
-          window.location.href = '/';
+          window.location.pathname = '/';
         }
       } finally {
         setLoading(false);
