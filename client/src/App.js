@@ -45,6 +45,7 @@
 
 // export default App;
 
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Editor from './Editor';
@@ -56,6 +57,7 @@ const url = process.env.REACT_APP_BACKEND_URL || 'https://letter-writer-app-back
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const isHome = window.location.pathname === '/home';
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -65,38 +67,43 @@ function App() {
         });
         if (response.data.user) {
           setUser(response.data.user);
-          // Redirect handled by link in Login component
+          if (!isHome) {
+            window.location.href = '/home';
+          }
+        } else if (isHome) {
+          window.location.href = '/';
         }
       } catch (error) {
         setUser(null);
+        if (isHome) {
+          window.location.href = '/';
+        }
       } finally {
         setLoading(false);
       }
     };
 
     checkAuth();
-  }, []);
+  }, [isHome]);
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  return (
-    <div>
-      <h1>Letter Writer App</h1>
-      {user ? (
-        <>
-          <div className='welcome-container'>
-            <p>Welcome, {user.displayName || "User"}</p>
-            <a href={`${url}/auth/logout`}>Logout</a>
-          </div>
-          <Editor />
-        </>
-      ) : (
-        <Login />
-      )}
-    </div>
-  );
+  if (isHome) {
+    return user ? (
+      <div>
+        <h1>Letter Writer App</h1>
+        <div className='welcome-container'>
+          <p>Welcome, {user.displayName || "User"}</p>
+          <a href={`${url}/auth/logout`}>Logout</a>
+        </div>
+        <Editor />
+      </div>
+    ) : null;
+  }
+
+  return <Login />;
 }
 
 export default App;

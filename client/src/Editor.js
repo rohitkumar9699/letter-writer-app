@@ -47,37 +47,51 @@
 // export default Editor;
 
 
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import './editor.css';
 
-// const url = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
 const url = process.env.REACT_APP_BACKEND_URL || 'https://letter-writer-app-backend.vercel.app';
 
 function Editor() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [message, setMessage] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
     if (!title.trim() || !content.trim()) {
-      setMessage('Title and content cannot be empty.');
+      setMessage('Please enter both title and content');
       return;
     }
+
+    setIsSaving(true);
+    setMessage('');
 
     try {
       const response = await axios.post(
         `${url}/letters/save`, 
         { title, content }, 
-        { withCredentials: true }
+        { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
-      setMessage(response.data.message);
-      setTitle('');
-      setContent('');
+      
+      if (response.data.success) {
+        setMessage('Letter saved successfully!');
+        setTitle('');
+        setContent('');
+      } else {
+        setMessage(response.data.message || 'Failed to save letter');
+      }
     } catch (error) {
-      console.error(error);
-      setMessage(error.response?.data?.message || 'Error saving letter.');
+      console.error('Save error:', error);
+      setMessage(error.response?.data?.message || 'Error saving letter');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -89,18 +103,28 @@ function Editor() {
         placeholder="Letter Title"
         value={title}
         onChange={e => setTitle(e.target.value)}
+        className="editor-input"
+        disabled={isSaving}
       />
-      <br />
       <textarea
-        rows="10"
-        cols="50"
         placeholder="Write your letter here..."
         value={content}
         onChange={e => setContent(e.target.value)}
+        className="editor-textarea"
+        disabled={isSaving}
       />
-      <br />
-      <button onClick={handleSave}>Save to Google Drive</button>
-      {message && <p className="message">{message}</p>}
+      <button 
+        onClick={handleSave} 
+        className="save-button"
+        disabled={isSaving}
+      >
+        {isSaving ? 'Saving...' : 'Save to Google Drive'}
+      </button>
+      {message && (
+        <p className={`message ${message.includes('success') ? 'success' : 'error'}`}>
+          {message}
+        </p>
+      )}
     </div>
   );
 }

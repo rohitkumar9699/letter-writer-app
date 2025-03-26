@@ -31,15 +31,22 @@
 
 // export default Login;
 
+
 import React from 'react';
+import "./index.css";
 
 const url = process.env.REACT_APP_BACKEND_URL || 'https://letter-writer-app-backend.vercel.app';
 
 function Login() {
   return (
     <div className="login-container">
-      <h2>Login with Google</h2>
-      <a href={`${url}/auth/google`}>Login with Google</a>
+      <h2>Letter Writer App</h2>
+      <a 
+        href={`${url}/auth/google`} 
+        className="login-button"
+      >
+        Login with Google
+      </a>
     </div>
   );
 }

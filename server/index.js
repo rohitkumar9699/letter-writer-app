@@ -49,22 +49,20 @@
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
-const dotenv = require('dotenv');
 const cors = require('cors');
-
-dotenv.config();
-const url = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
+const bodyParser = require('body-parser');
+require('dotenv').config();
 
 const app = express();
+const frontendUrl = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
 
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
-    origin: url,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+  origin: frontendUrl,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"]
 }));
 
 app.use(session({
@@ -87,5 +85,13 @@ require('./config/passport')(passport);
 app.use('/auth', require('./routes/auth'));
 app.use('/letters', require('./routes/letters'));
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK' });
+});
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`CORS configured for: ${frontendUrl}`);
+});

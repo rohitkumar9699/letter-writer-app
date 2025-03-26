@@ -112,12 +112,11 @@
 
 // module.exports = router;
 
-
 const express = require('express');
 const { google } = require('googleapis');
 const router = express.Router();
 
-// Middleware to ensure the user is authenticated
+// Middleware to ensure authentication
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
@@ -125,33 +124,43 @@ function ensureAuthenticated(req, res, next) {
   res.status(401).json({ message: "Unauthorized" });
 }
 
-// Helper function to get or create the "Letters" folder
+// Helper function for Letters folder
 async function getOrCreateLettersFolder(auth) {
   const drive = google.drive({ version: 'v3', auth });
+  
+  try {
+    const folderResponse = await drive.files.list({
+      q: "name='Letters' and mimeType='application/vnd.google-apps.folder' and trashed=false",
+      fields: 'files(id)',
+    });
 
-  const folderResponse = await drive.files.list({
-    q: "name='Letters' and mimeType='application/vnd.google-apps.folder' and trashed=false",
-    fields: 'files(id)',
-  });
+    if (folderResponse.data.files.length > 0) {
+      return folderResponse.data.files[0].id;
+    }
 
-  if (folderResponse.data.files.length > 0) {
-    return folderResponse.data.files[0].id;
+    const folder = await drive.files.create({
+      requestBody: {
+        name: 'Letters',
+        mimeType: 'application/vnd.google-apps.folder',
+      },
+      fields: 'id',
+    });
+
+    return folder.data.id;
+  } catch (error) {
+    console.error('Error in getOrCreateLettersFolder:', error);
+    throw error;
   }
-
-  const folder = await drive.files.create({
-    requestBody: {
-      name: 'Letters',
-      mimeType: 'application/vnd.google-apps.folder',
-    },
-    fields: 'id',
-  });
-
-  return folder.data.id;
 }
 
-// Save letter to Google Drive as a Google Doc in "Letters" folder
+// Save letter endpoint
 router.post('/save', ensureAuthenticated, async (req, res) => {
   try {
+    // Add validation for request body
+    if (!req.body || !req.body.title || !req.body.content) {
+      return res.status(400).json({ message: "Title and content are required" });
+    }
+
     const { title, content } = req.body;
     const oauth2Client = new google.auth.OAuth2();
     oauth2Client.setCredentials({ access_token: req.user.accessToken });
@@ -168,7 +177,12 @@ router.post('/save', ensureAuthenticated, async (req, res) => {
     await docs.documents.batchUpdate({
       documentId: documentId,
       requestBody: {
-        requests: [{ insertText: { location: { index: 1 }, text: content || '' } }]
+        requests: [{
+          insertText: {
+            location: { index: 1 },
+            text: content || ''
+          }
+        }]
       }
     });
 
@@ -179,14 +193,22 @@ router.post('/save', ensureAuthenticated, async (req, res) => {
       fields: 'id, parents'
     });
 
-    res.json({ message: 'Letter saved to Google Drive!', documentId });
+    res.json({ 
+      success: true,
+      message: 'Letter saved to Google Drive!', 
+      documentId 
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error saving letter', error: error.message });
+    console.error('Error in /save:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Error saving letter', 
+      error: error.message 
+    });
   }
 });
 
-// List Google Docs files (letters) from "Letters" folder
+// List letters endpoint
 router.get('/list', ensureAuthenticated, async (req, res) => {
   try {
     const oauth2Client = new google.auth.OAuth2();
@@ -197,13 +219,20 @@ router.get('/list', ensureAuthenticated, async (req, res) => {
 
     const response = await drive.files.list({
       q: `mimeType='application/vnd.google-apps.document' and '${folderId}' in parents and trashed=false`,
-      fields: 'files(id, name, createdTime)'
+      fields: 'files(id, name, createdTime, webViewLink)'
     });
 
-    res.json(response.data.files);
+    res.json({ 
+      success: true,
+      files: response.data.files 
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Error retrieving letters', error: error.message });
+    console.error('Error in /list:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Error retrieving letters', 
+      error: error.message 
+    });
   }
 });
 

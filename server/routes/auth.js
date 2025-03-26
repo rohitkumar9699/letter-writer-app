@@ -37,11 +37,12 @@
 
 // module.exports = router;
 
+
 const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 
-const url = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
+const frontendUrl = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
 
 router.get('/google', passport.authenticate('google', { 
   scope: ['profile', 'email', 'https://www.googleapis.com/auth/drive.file'] 
@@ -51,7 +52,7 @@ router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/auth/failure' }),
   (req, res) => {
     req.session.save(() => {
-      res.redirect(`${url}/home`); // Redirect to /home after login
+      res.redirect(`${frontendUrl}/home`);
     });
   }
 );
@@ -64,7 +65,7 @@ router.get('/logout', (req, res, next) => {
   req.logout(function(err) {
     if (err) { return next(err); }
     req.session.destroy(() => {
-      res.redirect(url); // Redirect to main page after logout
+      res.redirect(frontendUrl);
     });
   });
 });
