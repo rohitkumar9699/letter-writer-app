@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
-const frontendUrl = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
+const frontendUrl = process.env.CLIENT_URL || 'https://letter-writer-app-frontend.vercel.app';
 
 // Corrected health check endpoint
 app.get("/check", (req, res) => {

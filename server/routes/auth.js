@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const router = express.Router();
 
-const frontendUrl = process.env.CLIENT_URL || 'https://letter-writer-app.netlify.app';
+const frontendUrl = process.env.CLIENT_URL || 'https://letter-writer-app-frontend.vercel.app';
 
 router.get('/google', passport.authenticate('google', { 
   scope: ['profile', 'email', 'https://www.googleapis.com/auth/drive.file'],
